@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>WebSocket Chat</title>
+</head>
+<body>
+  <h2>WebSocket Chat</h2>
+
+  <input id="nick" placeholder="Ваш ник"><br><br>
+  <div id="chat" style="border:1px solid #ccc; height:200px; overflow:auto; margin-bottom:10px;"></div>
+
+  <input id="msg" placeholder="Введите сообщение">
+  <button id="send">Отправить</button>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:8080/ws"); // адрес сервера Go
+    const chat = document.getElementById("chat");
+    const msgInput = document.getElementById("msg");
+    const nickInput = document.getElementById("nick");
+
+    ws.onopen = () => {
+      chat.innerHTML += "<div><em>Подключено к серверу</em></div>";
+    };
+
+    ws.onmessage = (e) => {
+      const msg = JSON.parse(e.data);
+      chat.innerHTML += `<div><b>${msg.nick}:</b> ${msg.text}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+    };
+
+    document.getElementById("send").onclick = () => {
+      const message = {
+        nick: nickInput.value || "Anon",
+        text: msgInput.value
+      };
+      ws.send(JSON.stringify(message));
+      msgInput.value = "";
+    };
+  </script>
+</body>
+</html>
