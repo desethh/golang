@@ -210,7 +210,7 @@
           <div class="card reviews" id="reviews" style="margin-top:16px">
             <h3 style="color: #ffffff; margin-bottom: 12px;">Отзывы</h3>
 
-            <form action="/save_article" method="post" style="margin-bottom: 20px;">
+            <form action="https://it-astana2.ru/save_article" method="post" style="margin-bottom: 20px;">
               <input type="text" name="user" placeholder="Ваше имя" required
                 style="width: 100%; padding: 10px; margin-bottom: 10px; border: none; border-radius: 6px; background: #2d2d2d; color: #fff;">
               <textarea name="anons" id="anons" class="form-control" placeholder="Оставьте комментарий" required
@@ -289,7 +289,7 @@
       date: new Date().toISOString()
     };
 
-    fetch('https://it-astana2/api/lead', {
+    fetch('https://it-astana2.ru/api/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
