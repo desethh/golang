@@ -40,6 +40,11 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		Value: "logged_in",
 		Path:  "/",
 	})
+	http.SetCookie(w, &http.Cookie{
+		Name:  "username",
+		Value: username,
+		Path:  "/",
+	})
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

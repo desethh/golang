@@ -3,10 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Main Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+            list-style: none;
+            text-decoration: none;
+        }
+
+        body {
+            background-color: linen;
+            background-size: cover;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: cornsilk;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8%;
+            box-shadow: 0 5px 10px black;
+        }
+
+        header .username {
+            font-size: 20px;
+            font-weight: 900;
+            color: black;
+        }
+
+        header nav ul li {
+            position: relative;
+            float: left;
+
+        }
+
+        header nav ul li a {
+            padding : 15px;
+            color: black;
+            font-size: 16px;
+            display: block;
+
+        }
+
+        nav ul li ul {
+            position: absolute; 
+            top: 55px;
+            right: 0;
+            z-index: 9999; 
+            left: 0;
+            width: 180px;
+            background: white;
+            display: none;
+        }
+
+        nav ul li ul li {
+            width: 100%;
+            border: 1px solid rgba(0, 0, 0, .1);
+        }
+
+        nav ul li:hover > ul {
+            display: initial;
+        }
+
+
+
+        .cards {
+            display: flex;  
+            justify-content: center;
+            margin-top: 100px;
+        }
+        .hotel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 10px;
+            width: 200px;
+            height: 90%;
+            background-color:antiquewhite;
+            border-radius: 10px;
+        }
+
+        .info {
+            text-align: center;
+        }
+
+        .info p {
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-    <a href="C:\Users\Tayir\Desktop\git\golang\goroutines\login\login.html">Login In</a><p></p>
-    <a href="C:\Users\Tayir\Desktop\git\golang\goroutines\register\reg.html">Sing Up</a>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="http://localhost:8080/profile"> <div class="username">{{ .Username }}</div></a>
+                    <ul>
+                        <li><a href="http://localhost:8080/profile">Profile</a></li>
+                        <li>
+                            <form action="http://localhost:8080/logout" method="POST" style="margin:0;">
+                                <button type="submit" style="background:none; border:none; padding:15px; cursor:pointer;">Logout</button>
+                            </form>
+                        </li>
+                        
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+        <div class="cards">
+            {{ range .Hotels }}
+            <div class="hotel">
+                <div class="info">
+                    <h2>{{ .Name }}</h2>
+                    <p>Location: {{ .Location }}</p>
+                    <p>Price: ${{ .Price }}/day</p>
+                </div>
+                    
+            </div>
+            {{ end }}
+        </div>
+    
 </body>
 </html>

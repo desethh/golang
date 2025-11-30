@@ -3,9 +3,9 @@ package main
 import (
 	"goroutines/dbs"
 	"goroutines/login"
-	"text/template"
-
+	"goroutines/logout"
 	"goroutines/middleware"
+	"goroutines/parser"
 	"goroutines/register"
 	"log"
 	"net/http"
@@ -18,6 +18,7 @@ func main() {
 	http.Handle("/", authmiddleware)
 	http.HandleFunc("/register", register.MethodChecker)
 	http.HandleFunc("/login", login.LoginMethodChecker)
+	http.HandleFunc("/logout", logout.LogoutMethodChecker)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -26,10 +27,5 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	tmpl := template.Must(template.ParseFiles("templates/mainpage.html"))
-
-	err := tmpl.Execute(w, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	parser.HotelsHandler(w, r)
 }
