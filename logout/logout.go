@@ -2,7 +2,11 @@ package logout
 
 import (
 	"net/http"
+
+	"github.com/gorilla/sessions"
 )
+
+var store = sessions.NewCookieStore([]byte("pm2zlsz1PdlU8ymTwD4T2UIXpFy6qqzo"))
 
 func LogoutMethodChecker(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
@@ -13,11 +17,8 @@ func LogoutMethodChecker(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-	http.SetCookie(w, &http.Cookie{
-		Name:   "session",
-		Value:  "",
-		Path:   "/",
-		MaxAge: -1,
-	})
+	session, _ := store.Get(r, "user-session")
+	session.Options.MaxAge = -1
+	session.Save(r, w)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }

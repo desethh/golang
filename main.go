@@ -9,7 +9,11 @@ import (
 	"goroutines/register"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/sessions"
 )
+
+var Store = sessions.NewCookieStore([]byte("pm2zlsz1PdlU8ymTwD4T2UIXpFy6qqzo"))
 
 func main() {
 	dbs.DBopen()

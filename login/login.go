@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+
+	"github.com/gorilla/sessions"
 )
 
 func LoginMethodChecker(w http.ResponseWriter, r *http.Request) {
@@ -23,6 +25,8 @@ func LoginMethodChecker(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+var store = sessions.NewCookieStore([]byte("pm2zlsz1PdlU8ymTwD4T2UIXpFy6qqzo"))
+
 func LoginPage(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
@@ -35,16 +39,19 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Wrong Username or Password", http.StatusUnauthorized)
 		return
 	}
-	http.SetCookie(w, &http.Cookie{
-		Name:  "session",
-		Value: "logged_in",
-		Path:  "/",
-	})
-	http.SetCookie(w, &http.Cookie{
-		Name:  "username",
-		Value: username,
-		Path:  "/",
-	})
+	userid := dbs.DB.QueryRow("SELECT uid from Users WHERE username = ?", username)
+	var uid int
+	userid.Scan(&uid)
+	session, _ := store.Get(r, "user-session")
+	session.Values["authenticated"] = true
+	session.Values["user-id"] = uid
+	session.Values["username"] = username
+
+	err := session.Save(r, w)
+	if err != nil {
+		http.Error(w, "Cannot save session", http.StatusInternalServerError)
+		return
+	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

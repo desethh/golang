@@ -4,6 +4,9 @@ import (
 	"goroutines/dbs"
 	"html/template"
 	"net/http"
+	"time"
+
+	"github.com/gorilla/sessions"
 )
 
 var tmpl = template.Must(template.ParseFiles("templates/mainpage.html"))
@@ -11,7 +14,7 @@ var tmpl = template.Must(template.ParseFiles("templates/mainpage.html"))
 type Hotel struct {
 	Name     string
 	Location string
-	Price    int
+	BDate    time.Time
 }
 
 type PageData struct {
@@ -19,26 +22,41 @@ type PageData struct {
 	Hotels   []Hotel
 }
 
+var store = sessions.NewCookieStore([]byte("pm2zlsz1PdlU8ymTwD4T2UIXpFy6qqzo"))
+
 func HotelsHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := dbs.DB.Query("SELECT name, location, price FROM Hotels")
+
+	session, _ := store.Get(r, "user-session")
+
+	uid, ok := session.Values["user-id"].(int)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	rows, err := dbs.DB.Query("SELECT h.hotelname, h.location, h.bdate FROM Users u JOIN Hotels h ON u.uid = h.uid WHERE u.uid = ?", uid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer rows.Close()
 	var hotels []Hotel
+
 	for rows.Next() {
 		var h Hotel
-		rows.Scan(&h.Name, &h.Location, &h.Price)
+		rows.Scan(&h.Name, &h.Location, &h.BDate)
+
 		hotels = append(hotels, h)
 	}
-	cookie, err := r.Cookie("username")
-	if err != nil {
-		http.Redirect(w, r, "http://localhost:8080/login", http.StatusSeeOther)
+
+	cookie, ok := session.Values["username"].(string)
+	if !ok {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
 	data := PageData{
-		Username: cookie.Value,
+		Username: cookie,
 		Hotels:   hotels,
 	}
 
