@@ -21,7 +21,7 @@ func MethodChecker(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetBookingPage(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "user_session")
+	session, _ := store.Get(r, "user-session")
 	uid, ok := session.Values["user-id"].(int)
 	if !ok {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
