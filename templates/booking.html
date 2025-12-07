@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Бронирование отеля</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Забронировать отель</h2>
+
+    <form action="/book" method="POST">
+
+        <label>Выберите отель:</label>
+        <select name="hotel">
+            {{range .Hotels}}
+            <option value="{{.Name}}|{{.Location}}">
+                {{.Name}} — {{.Location}}
+            </option>
+            {{end}}
+        </select>
+        <label for="start_date">Дата заезда:</label>
+        <input type="date" id="start_date" name="startdate" required>
+
+        <label for="end_date">Дата выезда:</label>
+        <input type="date" id="end_date" name="enddate" required>
+
+        <button type="submit">Забронировать</button>
+    </form>
+</div>
+
+</body>
+</html>

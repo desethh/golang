@@ -1,7 +1,10 @@
 package main
 
 import (
+	"goroutines/booking"
 	"goroutines/dbs"
+
+	"goroutines/getbook"
 	"goroutines/login"
 	"goroutines/logout"
 	"goroutines/middleware"
@@ -23,6 +26,8 @@ func main() {
 	http.HandleFunc("/register", register.MethodChecker)
 	http.HandleFunc("/login", login.LoginMethodChecker)
 	http.HandleFunc("/logout", logout.LogoutMethodChecker)
+	http.HandleFunc("/booking", booking.BookingPage)
+	http.HandleFunc("/book", getbook.GetBookingPage)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

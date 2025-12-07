@@ -12,9 +12,10 @@ import (
 var tmpl = template.Must(template.ParseFiles("templates/mainpage.html"))
 
 type Hotel struct {
-	Name     string
-	Location string
-	BDate    time.Time
+	Name      string
+	Location  string
+	Startdate time.Time
+	Enddate   time.Time
 }
 
 type PageData struct {
@@ -34,7 +35,7 @@ func HotelsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, err := dbs.DB.Query("SELECT h.hotelname, h.location, h.bdate FROM Users u JOIN Hotels h ON u.uid = h.uid WHERE u.uid = ?", uid)
+	rows, err := dbs.DB.Query("SELECT h.hotelname, h.location, h.startdate, h.enddate FROM Users u JOIN Hotels h ON u.uid = h.uid WHERE u.uid = ?", uid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -44,7 +45,7 @@ func HotelsHandler(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var h Hotel
-		rows.Scan(&h.Name, &h.Location, &h.BDate)
+		rows.Scan(&h.Name, &h.Location, &h.Startdate, &h.Enddate)
 
 		hotels = append(hotels, h)
 	}
